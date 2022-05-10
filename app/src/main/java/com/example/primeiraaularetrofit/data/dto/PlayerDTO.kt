@@ -6,5 +6,7 @@ data class PlayerDTO(
     val name: String,
     @SerializedName("pos")
     val position: String,
-    val country: String
+    val country: String,
+    @SerializedName("Barras")
+    val saldoPartidas: SaldoPartidasDTO,
 )

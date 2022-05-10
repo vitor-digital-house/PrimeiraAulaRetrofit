@@ -46,4 +46,12 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
+    // Coroutines
+    def coroutinesVersion = "1.6.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+
+    // Fragment KTX
+    def fragmentKtxVersion = "1.4.1"
+    implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+
 }
