@@ -54,4 +54,8 @@ dependencies {
     def fragmentKtxVersion = "1.4.1"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
 
+    // Livedata KTX
+    def liveDataKtxVersion = "2.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$liveDataKtxVersion"
+
 }
