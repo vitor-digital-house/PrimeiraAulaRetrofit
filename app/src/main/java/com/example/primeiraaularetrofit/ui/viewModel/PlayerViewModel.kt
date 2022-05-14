@@ -1,6 +1,5 @@
 package com.example.primeiraaularetrofit.ui.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,7 @@ import com.example.primeiraaularetrofit.data.PlayerRepository
 import com.example.primeiraaularetrofit.data.dto.PlayerDTO
 import com.example.primeiraaularetrofit.ui.vo.PlayerVO
 import kotlinx.coroutines.launch
+import okio.IOException
 import retrofit2.HttpException
 
 class PlayerViewModel : ViewModel() {
@@ -25,7 +25,8 @@ class PlayerViewModel : ViewModel() {
                 val dto = repository.fetchPlayer().data.first().player
                 _fetchResultLiveData.value = Result.Success(convertDTOToVO(dto))
             } catch (ex: HttpException) {
-                Log.e("VIEWMODEL", "fetchPlayer: DEU ERRADO")
+                _fetchResultLiveData.value = Result.Error
+            } catch (ex: IOException) {
                 _fetchResultLiveData.value = Result.Error
             }
         }
