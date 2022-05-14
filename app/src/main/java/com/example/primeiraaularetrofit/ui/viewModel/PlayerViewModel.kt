@@ -1,5 +1,6 @@
 package com.example.primeiraaularetrofit.ui.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,17 +9,25 @@ import com.example.primeiraaularetrofit.data.PlayerRepository
 import com.example.primeiraaularetrofit.data.dto.PlayerDTO
 import com.example.primeiraaularetrofit.ui.vo.PlayerVO
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class PlayerViewModel : ViewModel() {
     private val repository = PlayerRepository()
 
-    private val _playerLiveData: MutableLiveData<PlayerVO> = MutableLiveData()
-    val playerLiveData: LiveData<PlayerVO> = _playerLiveData
+    private val _fetchResultLiveData = MutableLiveData<Result>()
+    val fetchResultLiveData: LiveData<Result> = _fetchResultLiveData
 
     fun fetchPlayer() {
         viewModelScope.launch {
-            val dto = repository.fetchPlayer().data.first().player
-            _playerLiveData.value = convertDTOToVO(dto)
+            _fetchResultLiveData.value = Result.Loading
+
+            try {
+                val dto = repository.fetchPlayer().data.first().player
+                _fetchResultLiveData.value = Result.Success(convertDTOToVO(dto))
+            } catch (ex: HttpException) {
+                Log.e("VIEWMODEL", "fetchPlayer: DEU ERRADO")
+                _fetchResultLiveData.value = Result.Error
+            }
         }
     }
 
@@ -29,5 +38,15 @@ class PlayerViewModel : ViewModel() {
             position = dto.position,
             customized = "Thanks for using my app"
         )
+    }
+
+    sealed class Result {
+        class Success(val playerVO: PlayerVO) : Result()
+
+        object Error : Result() {
+            val msg = "Ops, algo deu errado"
+        }
+
+        object Loading : Result()
     }
 }

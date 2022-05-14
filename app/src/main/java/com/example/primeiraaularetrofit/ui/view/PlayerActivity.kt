@@ -1,8 +1,11 @@
 package com.example.primeiraaularetrofit.ui.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.primeiraaularetrofit.R
@@ -27,8 +30,16 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setupObserver() {
-        viewModel.playerLiveData.observe(this) {
-            updateLayout(it)
+        viewModel.fetchResultLiveData.observe(this) {
+            when (it) {
+                is PlayerViewModel.Result.Loading -> {
+                    showLoading()
+                }
+                is PlayerViewModel.Result.Error -> {
+                    Toast.makeText(this, it.msg, Toast.LENGTH_SHORT).show()
+                }
+                is PlayerViewModel.Result.Success -> updateLayout(it.playerVO)
+            }
         }
     }
 
@@ -37,7 +48,10 @@ class PlayerActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_country).text = player.country
         findViewById<TextView>(R.id.tv_position).text = player.position
         findViewById<TextView>(R.id.tv_customized).text = player.customized
+        findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
     }
 
-    private fun fetchPlayer() = viewModel.fetchPlayer()
+    private fun showLoading() {
+        findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+    }
 }
