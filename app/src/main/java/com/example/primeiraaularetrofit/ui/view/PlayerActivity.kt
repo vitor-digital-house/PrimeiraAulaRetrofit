@@ -16,6 +16,22 @@ class PlayerActivity : AppCompatActivity() {
 
     private val viewModel: PlayerViewModel by viewModels()
 
+    private val tvName: TextView by lazy {
+        findViewById(R.id.tv_name)
+    }
+    private val tvCountry: TextView by lazy {
+        findViewById(R.id.tv_country)
+    }
+    private val tvPosition: TextView by lazy {
+        findViewById(R.id.tv_position)
+    }
+    private val tvCustomized: TextView by lazy {
+        findViewById(R.id.tv_customized)
+    }
+    private val progressBar: ProgressBar by lazy {
+        findViewById(R.id.progress_bar)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -36,6 +52,7 @@ class PlayerActivity : AppCompatActivity() {
                     showLoading()
                 }
                 is PlayerViewModel.Result.Error -> {
+                    hideView(progressBar)
                     Toast.makeText(this, it.msg, Toast.LENGTH_SHORT).show()
                 }
                 is PlayerViewModel.Result.Success -> updateLayout(it.playerVO)
@@ -44,14 +61,29 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun updateLayout(player: PlayerVO) {
-        findViewById<TextView>(R.id.tv_name).text = player.name
-        findViewById<TextView>(R.id.tv_country).text = player.country
-        findViewById<TextView>(R.id.tv_position).text = player.position
-        findViewById<TextView>(R.id.tv_customized).text = player.customized
-        findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
+        showTextView(tvName, player.name)
+        showTextView(tvCountry, player.country)
+        showTextView(tvPosition, player.position)
+        showTextView(tvCustomized, player.customized)
+        hideView(progressBar)
     }
 
     private fun showLoading() {
-        findViewById<ProgressBar>(R.id.progress_bar).visibility = View.VISIBLE
+        hideView(tvName)
+        hideView(tvCountry)
+        hideView(tvPosition)
+        hideView(tvCustomized)
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showTextView(tv: TextView, txt: String) {
+        tv.apply {
+            text = txt
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideView(view: View) {
+        view.visibility = View.INVISIBLE
     }
 }
